@@ -56,7 +56,8 @@ def filterResults(result,tags):
 
 if __name__ == "__main__":
 	filename = "goldenglobes-processedTweets.json"
-	question = "best actor"
-	tags = question.split()
+	question = "best presenter"
+	porter = nltk.PorterStemmer()
+	tags = [porter.stem(i) for i in question.split()]
 	print filterResults(getAnswer(filename,tags)[:20],tags)
 
