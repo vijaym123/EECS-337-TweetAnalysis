@@ -11,6 +11,7 @@ import unicodedata
 
 year = raw_input("Golden Globes year: ")
 pagename = "http://www.goldenglobes.com/awards/" + year
+print "\n"
 
 
 page = requests.get(pagename)
@@ -24,7 +25,8 @@ nominees = []
 for z in winners:
 	nominees.append(z.replace("-"," "))
 for z in noms:
-	nominees.append(z.replace("-"," "))
+	z = z.replace(u"\xe9","e")
+	nominees.append(z)
 
 
 def levenshtein(s1, s2):
@@ -136,7 +138,6 @@ def getName(theWinner):
 		return theWinner
 	return best
 
-
 def guessWinner(results):
 	return getName(results[0][1].encode('ascii', 'ignore'))
 
@@ -156,7 +157,6 @@ def guessNoms(results):
 if __name__ == "__main__":
 	filename = "goldenglobes-processedTweets.json"
 
-	# No presenter
 	question = "best picture drama"
 	porter = nltk.PorterStemmer()
 	tags = [porter.stem(i) for i in question.split()]
@@ -166,7 +166,13 @@ if __name__ == "__main__":
 	print temp
 	print guessNoms(results)
 
-	# No presenter
+	question = "present best picture drama " + temp.lower()
+	porter = nltk.PorterStemmer()
+	tags = [porter.stem(i) for i in question.split()]
+	results =  filterResults(getAnswer(filename,tags)[:20],tags)
+	print "\nPresenter for Best Picture - Drama: "
+	print results[0][1].encode('ascii', 'ignore')
+
 	question = "best actor drama"
 	porter = nltk.PorterStemmer()
 	tags = [porter.stem(i) for i in question.split()]
@@ -175,6 +181,13 @@ if __name__ == "__main__":
 	temp = guessWinner(results)
 	print temp
 	print guessNoms(results)
+
+	question = "presents present best actor"
+	porter = nltk.PorterStemmer()
+	tags = [porter.stem(i) for i in question.split()]
+	results =  filterResults(getAnswer(filename,tags)[:20],tags)
+	print "\nPresenter for Best Actor - Drama: "
+	print guessWinner(results)
 
 	question = "best actress drama"
 	porter = nltk.PorterStemmer()
@@ -202,7 +215,6 @@ if __name__ == "__main__":
 	print guessWinner(results)
 	print guessNoms(results)
 
-	# No Presenter
 	question = "best actor comedy"
 	porter = nltk.PorterStemmer()
 	tags = [porter.stem(i) for i in question.split()]
@@ -211,6 +223,13 @@ if __name__ == "__main__":
 	temp = guessWinner(results)
 	print temp
 	print guessNoms(results)
+
+	question = "presents presenter best actress comedy musical"
+	porter = nltk.PorterStemmer()
+	tags = [porter.stem(i) for i in question.split()]
+	results =  filterResults(getAnswer(filename,tags)[:20],tags)
+	print "\nPresenter for Best Actor - Comedy or Musical: "
+	print results[0][1].encode('ascii', 'ignore')
 
 	question = "best actress comedy"
 	porter = nltk.PorterStemmer()
@@ -252,7 +271,7 @@ if __name__ == "__main__":
 	temp = guessWinner(results)
 	print temp
 	print guessNoms(results)
-
+	
 	question = "best director"
 	porter = nltk.PorterStemmer()
 	tags = [porter.stem(i) for i in question.split()]
@@ -299,7 +318,8 @@ if __name__ == "__main__":
 	tags = [porter.stem(i) for i in question.split()]
 	results =  filterResults(getAnswer(filename,tags)[:20],tags)
 	print "\nBest Actor in a Television Series - Drama: "
-	print guessWinner(results)
+	temp = guessWinner(results)
+	print temp
 	print guessNoms(results)
 
 	# No presenter
@@ -340,18 +360,17 @@ if __name__ == "__main__":
 	print guessNoms(results)
 
 	# No presenter
-	question = "best actress performance miniseries"
+	question = "best actress miniseries motion picture television"
 	porter = nltk.PorterStemmer()
 	tags = [porter.stem(i) for i in question.split()]
 	results =  filterResults(getAnswer(filename,tags)[:20],tags)
 	print "\nBest Actress - Miniseries or Television Film: "
-	temp = guessSecond(results)
+	temp = guessWinner(results)
 	print temp
 	print guessNoms(results)
 
-	#Fix
 	# No presenter
-	question = "supporting actor television series"
+	question = "best supporting actor miniseries motion picture"
 	porter = nltk.PorterStemmer()
 	tags = [porter.stem(i) for i in question.split()]
 	results =  filterResults(getAnswer(filename,tags)[:20],tags)
@@ -385,7 +404,6 @@ if __name__ == "__main__":
 	print "\nBest Dress: "
 	print results[0][1].encode('ascii', 'ignore')
 
-
 	question = "speech"
 	porter = nltk.PorterStemmer()
 	tags = [porter.stem(i) for i in question.split()]
@@ -406,7 +424,6 @@ if __name__ == "__main__":
 	results =  filterResults(getAnswer(filename,tags)[:40],tags)
 	print "\nPeople Hated: "
 	print guessWinner(results)
-
 
 
 
